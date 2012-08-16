@@ -479,6 +479,12 @@ subdirs := \
 	external/openssl \
 	external/yaffs2 \
 	external/zlib
+
+ifneq ($(TARGET_BOOTLOADER_TYPE),fastboot)
+# We need (host) fs_get_stats for the boottarball target
+subdirs += build/tools/fs_get_stats
+endif
+
 else	# !BUILD_TINY_ANDROID
 #
 # Typical build; include any Android.mk files we can find.
