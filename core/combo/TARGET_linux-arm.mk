@@ -244,6 +244,7 @@ endif
 KERNEL_HEADERS := $(KERNEL_HEADERS_COMMON) $(KERNEL_HEADERS_ARCH)
 
 TARGET_C_INCLUDES := \
+        $(TARGET_TOOLCHAIN_ROOT)/include \
 	$(libc_root)/arch-arm/include \
 	$(libc_root)/include \
 	$(libstdc++_root)/include \
