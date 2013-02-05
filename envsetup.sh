@@ -15,6 +15,7 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - resgrep: Greps on all local res/*.xml files.
 - godir:   Go to the directory containing a file.
 - aospremote: Add git remote for matching AOSP repository.
+- cmremote: Add git remote for matching CM repository.
 - mka:      Builds using SCHED_BATCH on all processors.
 - mkap:     Builds the module(s) using mka and pushes them to the device.
 - cmka:     Cleans and builds using mka.
@@ -1315,6 +1316,28 @@ function aospremote()
     echo "Remote 'aosp' created"
 }
 export -f aospremote
+
+function cmremote()
+{
+    T=$(gettop)
+    if [ ! "$T" ]; then
+        echo "Couldn't locate the top of the tree.  Try setting TOP." >&2
+        return
+    fi
+    git remote rm cm 2> /dev/null
+    if [ ! -d .git ]
+    then
+        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
+    fi
+    PROJECT=`pwd -P | sed s#$T/##g | sed s#/#_#g`
+    if (echo $PROJECT | grep -qv "^device")
+    then
+        PFX="android_"
+    fi
+    git remote add cm git://github.com/CyanogenMod/$PFX$PROJECT.git
+    echo "Remote 'cm' created"
+}
+export -f cmremote
 
 function installboot()
 {
