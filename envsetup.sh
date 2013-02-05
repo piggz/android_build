@@ -17,6 +17,7 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - aospremote: Add git remote for matching AOSP repository.
 - cmremote: Add git remote for matching CM repository.
 - cafremote: Add git remote for matching CAF repository.
+- linaroremote: Add git remote for matching Linaro repository.
 - mka:      Builds using SCHED_BATCH on all processors.
 - mkap:     Builds the module(s) using mka and pushes them to the device.
 - cmka:     Cleans and builds using mka.
@@ -1361,6 +1362,28 @@ function cafremote()
     echo "Remote 'caf' created"
 }
 export -f cafremote
+
+function linaroremote()
+{
+    T=$(gettop)
+    if [ ! "$T" ]; then
+        echo "Couldn't locate the top of the tree.  Try setting TOP." >&2
+        return
+    fi
+    git remote rm linaro 2> /dev/null
+    if [ ! -d .git ]
+    then
+        echo .git directory not found. Please run this from the root directory of the Android repository you wish to set up.
+    fi
+    PROJECT=`pwd -P | sed s#$T/##g`
+    if (echo $PROJECT | grep -qv "^device")
+    then
+        PFX="platform/"
+    fi
+    git remote add linaro git://android.git.linaro.org/$PFX$PROJECT
+    echo "Remote 'linaro' created"
+}
+export -f linaroremote
 
 function installboot()
 {
