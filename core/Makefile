@@ -1314,6 +1314,15 @@ else
     OTA_FROM_TARGET_SCRIPT := $(TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT)
 endif
 
+TARGET_ADBLOCKER_HOSTS_FILE := $(TARGET_OUT)/etc/hosts
+$(TARGET_ADBLOCKER_HOSTS_FILE):
+	@echo -e ${CL_YLW}"Running adblocker..."${CL_RST}
+	$(hide) TARGET_HOSTS_FILE=$(TARGET_ADBLOCKER_HOSTS_FILE) ./vendor/pizza/tools/adblocker
+
+ifneq ($(CM_BUILD),)
+$(INTERNAL_OTA_PACKAGE_TARGET): $(TARGET_ADBLOCKER_HOSTS_FILE)
+endif
+
 ifneq ($(CM_BUILD),)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
 else
