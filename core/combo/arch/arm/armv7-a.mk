@@ -37,11 +37,6 @@ arch_variant_cflags += \
 	-mfloat-abi=soft
 endif
 
-ifneq ($(TARGET_ARCH_VARIANT_FPU), neon)
-arch_variant_cflags := \
-	-mfpu=vfpv3-d16
-endif
-
 ifeq ($(strip $(TARGET_ARCH_VARIANT_CPU)),cortex-a8)
 arch_variant_ldflags := \
 	-Wl,--fix-cortex-a8
