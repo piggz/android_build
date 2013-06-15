@@ -67,9 +67,16 @@ endif
 TARGET_NO_UNDEFINED_LDFLAGS := -Wl,--no-undefined
 
 TARGET_arm_CFLAGS :=    -O3 \
+                        -fgcse-after-reload \
+                        -fipa-cp-clone \
+                        -fpredictive-commoning \
+                        -fsched-spec-load \
+                        -funswitch-loops \
+                        -fvect-cost-model \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
-                        -funswitch-loops
+                        -Wstrict-aliasing=3 \
+                        -Werror=strict-aliasing
 
 # Modules can choose to compile some source as thumb. As
 # non-thumb enabled targets are supported, this is treated
@@ -81,7 +88,13 @@ TARGET_thumb_CFLAGS :=  -mthumb \
                         -fomit-frame-pointer \
                         -fstrict-aliasing \
                         -Wstrict-aliasing=2 \
-                        -Werror=strict-aliasing
+                        -Werror=strict-aliasing \
+                        -fgcse-after-reload \
+                        -fsched-spec-load \
+                        -funswitch-loops \
+                        -fvect-cost-model \
+                        -fipa-cp-clone \
+                        -pipe
 else
 TARGET_thumb_CFLAGS := $(TARGET_arm_CFLAGS)
 endif
@@ -91,7 +104,7 @@ endif
 ifeq ($(DEBUG_NO_STRICT_ALIASING),yes)
 TARGET_arm_CFLAGS += -fno-strict-aliasing -Wno-error=strict-aliasing
 TARGET_thumb_CFLAGS += -fno-strict-aliasing -Wno-error=strict-aliasing
-endif   
+endif
 
 # Set FORCE_ARM_DEBUGGING to "true" in your buildspec.mk
 # or in your environment to force a full arm build, even for
@@ -125,6 +138,7 @@ TARGET_GLOBAL_CFLAGS += \
 			-Werror=format-security \
 			-D_FORTIFY_SOURCE=1 \
 			-fno-short-enums \
+			-pipe \
 			$(arch_variant_cflags)
 
 android_config_h := $(call select-android-config-h,linux-arm)
@@ -171,6 +185,11 @@ endif
 TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden
 ifneq ($(DEBUG_NO_STDCXX11),yes)
 TARGET_GLOBAL_CPPFLAGS += $(call cc-option,-std=gnu++11)
+endif
+
+ifneq ($(DEBUG_NO_STDC11),yes)
+LOCAL_C11_FILES := $(filter %.c, $(LOCAL_SRC_FILES))
+TARGET_GLOBAL_CFLAGS += $(call add-src-files-target-cflags, $(LOCAL_C11_FILES), -std=gnu11)
 endif
 
 # More flags/options can be added here
