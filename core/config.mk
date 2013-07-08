@@ -230,7 +230,7 @@ TARGET_CPU_ABI2 := $(strip $(TARGET_CPU_ABI2))
 
 # default target GCC version
 ifeq ($(strip $(TARGET_GCC_VERSION)),)
-TARGET_GCC_VERSION := 4.8
+TARGET_GCC_VERSION := 4.9
 endif
 
 # $(1): os/arch
