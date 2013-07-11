@@ -72,6 +72,8 @@ TARGET_arm_CFLAGS :=    -O3 \
                         -fpredictive-commoning \
                         -fsched-spec-load \
                         -funswitch-loops \
+                        -ftree-loop-distribution \
+                        -ftree-loop-linear \
                         -fvect-cost-model \
                         -fomit-frame-pointer \
                         -fstrict-aliasing    \
@@ -165,6 +167,8 @@ endif
 TARGET_GLOBAL_CFLAGS += -Wno-psabi
 
 TARGET_GLOBAL_LDFLAGS += \
+			-Wl,-fuse-ld=gold \
+			-Wl,-S \
 			-Wl,-z,noexecstack \
 			-Wl,-z,relro \
 			-Wl,-z,now \
