@@ -76,7 +76,9 @@ TARGET_arm_CFLAGS :=    -O3 \
                         -ftree-loop-linear \
                         -fvect-cost-model \
                         -fomit-frame-pointer \
-                        -fstrict-aliasing    \
+                        -flto \
+                        -fno-toplevel-reorder \
+                        -fstrict-aliasing \
                         -Wstrict-aliasing=3 \
                         -Werror=strict-aliasing
 
@@ -94,6 +96,8 @@ TARGET_thumb_CFLAGS :=  -mthumb \
                         -fgcse-after-reload \
                         -fsched-spec-load \
                         -funroll-loops \
+                        -flto \
+                        -fno-toplevel-reorder \
                         -fvect-cost-model \
                         -fipa-cp-clone \
                         -pipe
@@ -186,7 +190,9 @@ else
 TARGET_GLOBAL_CFLAGS += -mno-thumb-interwork
 endif
 
-TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden
+TARGET_GLOBAL_CPPFLAGS += -fvisibility-inlines-hidden \
+                          -flto \
+                          -fno-toplevel-reorder
 ifneq ($(DEBUG_NO_STDCXX11),yes)
 TARGET_GLOBAL_CPPFLAGS += $(call cc-option,-std=gnu++11)
 endif
