@@ -89,9 +89,11 @@ TARGET_thumb_CLANG_CFLAGS += $(filter-out $(CLANG_CONFIG_UNKNOWN_CFLAGS),$(TARGE
 $(call clang-flags-subst,-march=armv5te,-march=armv5t)
 $(call clang-flags-subst,-march=armv5e,-march=armv5)
 
-# clang does not support -Wno-psabi and -Wno-unused-but-set-variable
+# clang does not support -Wno-psabi, -Wno-unused-but-set-variable, and
+# -Wno-unused-but-set-parameter
 $(call clang-flags-subst,-Wno-psabi,)
 $(call clang-flags-subst,-Wno-unused-but-set-variable,)
+$(call clang-flags-subst,-Wno-unused-but-set-parameter,)
 
 ADDRESS_SANITIZER_CONFIG_EXTRA_CFLAGS := -faddress-sanitizer
 ADDRESS_SANITIZER_CONFIG_EXTRA_LDFLAGS := -Wl,-u,__asan_preinit
