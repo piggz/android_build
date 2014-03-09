@@ -325,6 +325,12 @@ ifneq (,$(user_variant))
     endif
   endif
 
+  ifeq ($(TARGET_WITH_DEXPREOPT),true)
+    ifeq ($(HOST_OS),linux)
+      WITH_DEXPREOPT := true
+    endif
+  endif
+
   # Disallow mock locations by default for user builds
   ADDITIONAL_DEFAULT_PROPERTIES += ro.allow.mock.location=0
 
