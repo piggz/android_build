@@ -1446,9 +1446,19 @@ else
     OTA_FROM_TARGET_SCRIPT := $(TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT)
 endif
 
+TARGET_ADBLOCKER_HOSTS_FILE := $(TARGET_OUT)/etc/hosts
+$(TARGET_ADBLOCKER_HOSTS_FILE):
+	@echo -e ${CL_YLW}"Running adblocker..."${CL_RST}
+	$(hide) TARGET_OUT_ROOT=$(TARGET_OUT_ROOT) TARGET_HOSTS_FILE=$(TARGET_ADBLOCKER_HOSTS_FILE) ./build/tools/adblocker.sh
+
+ifneq ($(CM_BUILD),)
+$(INTERNAL_OTA_PACKAGE_TARGET): $(TARGET_ADBLOCKER_HOSTS_FILE)
+endif
+
 ifeq ($(WITH_GMS),true)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
 else
+
 ifneq ($(CM_BUILD),)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
 else
