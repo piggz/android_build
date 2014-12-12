@@ -180,10 +180,13 @@ endif
 # For Java 1.6, we require Oracle for all host OSes.
 requires_openjdk := false
 ifeq ($(LEGACY_USE_JAVA6),)
+ifeq ($(DISABLE_OPENJDK_CHECK),)
 ifeq ($(HOST_OS), linux)
 requires_openjdk := true
 endif
 endif
+endif
+
 
 
 # Check for the current jdk
