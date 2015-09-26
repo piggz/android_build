@@ -24,13 +24,13 @@
 #######################
 
 # General optimization level of target ARM compiled with GCC. Default: -O2
-ARCHIDROID_GCC_CFLAGS_ARM := -O2
+ARCHIDROID_GCC_CFLAGS_ARM := -O3
 
 # General optimization level of target THUMB compiled with GCC. Default: -Os
-ARCHIDROID_GCC_CFLAGS_THUMB := -Os
+ARCHIDROID_GCC_CFLAGS_THUMB := -O3
 
 # Additional flags passed to all C targets compiled with GCC
-ARCHIDROID_GCC_CFLAGS := -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow
+ARCHIDROID_GCC_CFLAGS := -O3 -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-pointer -frename-registers -fsection-anchors -ftracer -ftree-loop-im -ftree-loop-ivcanon -funsafe-loop-optimizations -funswitch-loops -fweb -Wno-error=array-bounds -Wno-error=clobbered -Wno-error=maybe-uninitialized -Wno-error=strict-overflow
 
 ############################
 ### EXPERIMENTAL SECTION ###
@@ -41,7 +41,7 @@ ARCHIDROID_GCC_CFLAGS := -fgcse-las -fgcse-sm -fipa-pta -fivopts -fomit-frame-po
 # Results with other toolchains may vary
 
 # These flags work fine in suggested compiler, but may cause ICEs in other compilers, comment if needed
-# ARCHIDROID_GCC_CFLAGS += -fgraphite -fgraphite-identity
+ARCHIDROID_GCC_CFLAGS += -fgraphite -fgraphite-identity
 
 # The following flags (-floop) require that your GCC has been configured with --with-isl
 # Additionally, applying any of them will most likely cause ICE in your compiler, so they're disabled
@@ -65,7 +65,7 @@ ARCHIDROID_GCC_LDFLAGS := -Wl,--sort-common
 #####################
 
 # Flags passed to all C targets compiled with CLANG
-ARCHIDROID_CLANG_CFLAGS := -Qunused-arguments -Wno-unknown-warning-option
+ARCHIDROID_CLANG_CFLAGS := -O3 -Qunused-arguments -Wno-unknown-warning-option
 
 # Flags passed to CLANG preprocessor for C and C++
 ARCHIDROID_CLANG_CPPFLAGS := $(ARCHIDROID_CLANG_CFLAGS)
@@ -101,3 +101,19 @@ ARCHIDROID_CLANG_UNKNOWN_FLAGS := \
   -ftree-loop-ivcanon \
   -funsafe-loop-optimizations \
   -fweb
+
+#####################
+### HACKS SECTION ###
+#####################
+
+# Most of the flags are increasing code size of the output binaries, especially O3 instead of Os for target THUMB
+# This may become problematic for small blocks, especially for boot or recovery blocks (ramdisks)
+# If you don't care about the size of recovery.img, e.g. you have no use of it, and you want to silence the
+# error "image too large" for recovery.img, use this definition
+#
+# NOTICE: It's better to use device-based flag TARGET_NO_RECOVERY instead, but some devices may have
+# boot + recovery combo (e.g. Sony Xperias), and we must build recovery for them, so we can't set TARGET_NO_RECOVERY globally
+# Therefore, this seems like a safe approach (will only ignore check on recovery.img, without doing anything else)
+# However, if you use compiled recovery.img for your device, please disable this flag (comment or set to false), and lower
+# optimization levels instead
+ARCHIDROID_IGNORE_RECOVERY_SIZE := true
