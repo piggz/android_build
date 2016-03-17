@@ -551,6 +551,11 @@ subdir_makefiles := \
 ./prebuilts/tools/Android.mk \
 $(shell build/tools/findleaves.py --prune=out --prune=.repo --prune=.git $(subdir_makefile_dirs) Android.mk)
 
+ifeq ($(BOARD_REQUIRES_FAKEFLINGER),true)
+  subdir_makefiles := $(subdir_makefiles) \
+  ./hybris/hybris-boot/fakeflinger/Android.mk
+endif
+
 #./frameworks/native/services/connectivitymanager/Android.mk \
 # End of hybris mods
 
